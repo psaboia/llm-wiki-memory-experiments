@@ -200,6 +200,34 @@ how these wikis get built, not of enforcement; and `recall` is higher (1.00 vs
 all hold. The semantic objection raised against a per-write hook after Phase 1 is
 **withdrawn**: it did not survive its own confirmatory test.
 
+## Result 5 — what the mechanism actually adds to the graph
+
+The `periodic-lint` chains commit the wiki both *before* a sweep (`round4`) and
+*after* it (`lint4`), so the edges the mechanism added are a **diff, not an
+inference**. From chain `p2lint-r1` (`plot-graph.py`):
+
+- The wiki at round 4 is **12 nodes / 98 directed edges — ~74% dense**, nearly
+  complete. Drawing it whole is a hairball under any layout, so the figure shows
+  the subgraph that answers the question and the totals are reported here instead
+  of hidden by the framing.
+- The sweep added **8 edges out of 98 (~8%)** — a small perturbation, not a flood.
+  Each is a back-reference on the target of a link that already existed.
+- **All 8 were body links. Typed edges were unchanged: 21 before → 21 after.**
+
+![Each pair shows the blue ingestion link A→B and the orange back-reference B→A
+that the reciprocity sweep added to satisfy it; every added edge is a body link,
+none is a typed edge.](figures/graph-reciprocity.png)
+
+*Figure: the 8 edges the sweep added (orange, bold) and the ingestion links that
+required them (blue). Full graph omitted — 74% dense. Regenerate with
+`python3 plot-graph.py --wiki-repo <chain>/wiki/*.wiki --before round4 --after lint4`.*
+
+This pins down the mechanism behind Result 4: **the sweep repairs reachability, it
+does not enrich the knowledge graph.** It adds prose back-references (good for a
+reader arriving at the target) and never converts or adds a frontmatter typed
+edge (what the KG consumes). So a lint sweep neither degrades `typed_coverage`
+(H2 held) nor improves it — it is orthogonal to KG richness by construction.
+
 ## Threats to validity
 
 - **Synthetic corpus** (fictional, fixed) — chosen for a controlled, identical
