@@ -63,6 +63,13 @@ Both conditions grow the wiki to about the same size (12.3 / 12.0 / 11.0 content
 pages at r8), so the difference is not "gate-on wrote less" — it is that gate-on
 kept links bidirectional while the others let them go one-way.
 
+![Reciprocity erosion over editing rounds: gate-off climbs steeply, natural
+climbs slowly, gate-on stays near zero — shown for both the typed-edge and
+any-means criteria, mean of 3 replicates with min–max ribbons.](figures/erosion-curves.png)
+
+*Figure: mean of 3 replicates; shaded band is the min–max spread across
+replicates. Regenerate with `python3 plot.py`.*
+
 ## Interpretation
 
 1. **Erosion over time is real, not an artifact of the worst case.** Under normal
