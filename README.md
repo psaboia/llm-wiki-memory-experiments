@@ -6,11 +6,20 @@ and the paper *Beyond Memory: A Templated Substrate for Heterogeneous
 Collaborative Knowledge Work with LLM Agents* (Saboia Moreira, Vardeman, Sweet,
 University of Notre Dame; draft: https://zenodo.org/records/21229213).
 
-Each subdirectory is one self-contained experiment: fixed inputs, the scripts
-that run it, the raw results, and a `PROTOCOL.md` describing the design and its
-limitations. Experiments here are studies *about* the template; they are kept in
-a separate repo (not a template branch) so the template stays clean and the
-studies stay independently versioned and citable.
+Each subdirectory is one self-contained experiment, in three separated layers —
+`PROTOCOL.md` (how to run it: design, conditions, provenance, limitations),
+`results/` (raw data), and `REPORT.md` (what the data say) — plus the fixed
+inputs, the scripts that ran, `measure.py`, and a `plot.py` that regenerates
+every figure from the raw data. Experiments here are studies *about* the
+template; they are kept in a separate repo (not a template branch) so the
+template stays clean and the studies stay independently versioned and citable.
+
+**Adding an experiment: read [docs/adding-an-experiment.md](docs/adding-an-experiment.md) first.**
+It documents the layout, the naming, and — more importantly — the disciplines that
+make these results trustworthy (measure artifacts not agent self-reports, seed
+hermetically, fresh context per step, replicate, prove the checker can fail, and
+state every limitation including circularity). `reciprocity-erosion/` is the
+reference instance.
 
 ## Experiments
 
