@@ -118,9 +118,8 @@ def main():
               '    node [shape=plaintext, fillcolor="#ffffff", color="#ffffff"];',
               f'    l1 [label=<<font color="{INGEST_C}"><b>&#8212;&#8212;</b></font> ingestion link that required the back-reference>];',
               f'    l2 [label=<<font color="{ADDED_C}"><b>&#8212;&#8212;</b></font> <b>added by reciprocity sweep</b>>];',
-              '    l3 [label="solid = typed edge (KG-visible)"];',
-              '    l4 [label="dashed = body link only"];',
-              '    l1 -> l2 -> l3 -> l4 [style=invis];', '  }', '}']
+              '    l3 [label="all edges shown are body links — the sweep adds no typed edge"];',
+              '    l1 -> l2 -> l3 [style=invis];', '  }', '}']
     dot = "\n".join(lines)
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)

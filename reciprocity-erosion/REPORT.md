@@ -255,15 +255,51 @@ inference**. From chain `p2lint-r1` (`plot-graph.py`):
 that the reciprocity sweep added to satisfy it; every added edge is a body link,
 none is a typed edge.](figures/graph-reciprocity.png)
 
-*Figure: the 8 edges the sweep added (orange, bold) and the ingestion links that
-required them (blue). Full graph omitted — 74% dense. Regenerate with
+*Figure: the 8 edges the sweep added (orange) and the ingestion links that
+required them (blue) — all body links; no typed edge appears because the sweep
+adds none. Full graph omitted — 74% dense. Regenerate with
 `python3 plot-graph.py --wiki-repo <chain>/wiki/*.wiki --before round4 --after lint4`.*
 
-This pins down the mechanism behind Result 4: **the sweep repairs reachability, it
-does not enrich the knowledge graph.** It adds prose back-references (good for a
-reader arriving at the target) and never converts or adds a frontmatter typed
-edge (what the KG consumes). So a lint sweep neither degrades `typed_coverage`
-(H2 held) nor improves it — it is orthogonal to KG richness by construction.
+### The actual KG (not a link graph)
+
+The figure above is a *link* graph. The real knowledge graph is what
+`scripts/kg/build-graph.sh` produces; we ran it on the same chain
+(`results/phase2-kg-graph-full.ttl`, 449 base + 42 materialised = 491 triples)
+and rendered its semantic layer.
+
+![The KG's semantic layer: blue = SCHEMA vocabulary (criticizes/supports/extends),
+green dashed = inverses the pipeline materialises, orange = off-vocabulary
+predicates the agents invented (dependsOn/prerequisiteOf/partOf/hasPart), and the
+dashed Theory-X node — a SCHEMA example ingested as a real
+entity.](figures/kg-actual.png)
+
+![Left: the wiki is 264 body links against 13 semantic triples. Right: the sweep
+adds 8 to the body-link layer and leaves the semantic layer at 13,
+unchanged.](figures/kg-vs-links.png)
+
+Three things the KG shows that no link graph could:
+
+1. **A correction to what we wrote above.** Body links are **not** invisible to
+   the KG — the pipeline materialises each as a `mentions` triple (264 of them).
+   What prose costs is not *presence* but *specificity*: `mentions` instead of
+   `criticizes`. Earlier phrasing in this report claiming body-expressed relations
+   are "invisible to the KG" was wrong; this corrects it.
+2. **The semantic layer is tiny**: 13 typed triples against 264 `mentions`. And
+   most of it is **off-vocabulary** — the SCHEMA declares
+   extends/supports/criticizes/related/source/derived_from, but the agents invented
+   `dependsOn`, `prerequisiteOf`, `partOf`, `hasPart`, and the pipeline accepts them
+   *and materialises inverses for them* without a complaint.
+3. **Ghost nodes**: the pipeline ingests `SCHEMA_*.md` and `Edge-Types.md` as if
+   they were content pages, so their illustrative examples become entities —
+   `SCHEMA_… --extends--> Theory-X` is a real triple in the graph, as are
+   `Page-Name`, `Parent-Page`, `WIKI-INDEX`.
+
+Measured at both states, the semantic layer is **13 triples before the sweep and 13
+after**: this pins the mechanism behind Result 4 — **the sweep repairs the link
+layer and never reaches the semantic layer.** A lint sweep therefore neither
+degrades `typed_coverage` (H2 held) nor improves it; it is orthogonal to KG
+richness by construction. Items 2 and 3 are defects in the KG pipeline itself,
+independent of reciprocity, and are worth their own issues on the template.
 
 ## Threats to validity
 
