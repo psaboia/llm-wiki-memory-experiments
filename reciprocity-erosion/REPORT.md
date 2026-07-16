@@ -61,6 +61,10 @@ Typed-edge violations (what the gate checks today), mean of 3 replicates, by rou
 | `gate-on` (instruction, every round) | 0.0 | 0.0 | 0.0 | 0.7 | 0.7 | 0.7 | 0.7 | **0.7** |
 | `nudge` (mechanical, every write) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | **0.0** |
 
+*(These are the n=3 exploratory curves. They replicate at n=5 — see Result 4b —
+but only on the any-means metric; the typed-edge column below did **not**
+reproduce in Phase 2.)*
+
 The `periodic-lint` mechanical sweep produces a **sawtooth**: state climbs between
 sweeps and drops at each sweep (any-means reset from 4.3 at round 4 to 0.3 right
 after `lint4`, then climbs again and drops at `lint8`). It bounds erosion to a low
@@ -199,6 +203,39 @@ how these wikis get built, not of enforcement; and `recall` is higher (1.00 vs
 **Bearing:** PR #84 (the `/wiki-lint` mechanical check) is supported — H2, H3, H4
 all hold. The semantic objection raised against a per-write hook after Phase 1 is
 **withdrawn**: it did not survive its own confirmatory test.
+
+## Result 4b — the erosion curves at n=5: replicated, but only the any-means metric discriminates
+
+The Phase-2 chains were also measured for violation curves (free — the states are
+in git; no extra agents). Data: `results/phase2-erosion-curve.jsonl`, 130 points.
+Median of 5 replicates:
+
+**Any-means violations** (counts body links too — the proposed criterion):
+
+| condition | r1 | r2 | r3 | r4 | r5 | r6 | r7 | r8 |
+|---|---|---|---|---|---|---|---|---|
+| `natural` | 2 | 3 | 4 | 6 | 13 | 17 | 19 | **19** |
+| `periodic-lint` | 2 | 4 | 6 | 8 | 3 | 10 | 10 | **14** |
+| `nudge` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
+
+`periodic-lint` sweeps reset to **0.0** at both `lint4` and `lint8`.
+
+**All three core findings replicate at n=5**, and more strongly than at n=3:
+erosion is real and monotonic (`natural` 2 → 19, vs 9.7 in Phase 1); the sawtooth
+is real, with *perfect* resets (0.0 at each sweep, vs 0.3/1.0 in Phase 1);
+per-write enforcement holds flat at 0.
+
+**But the typed-edge metric — what today's gate checks — reported ~0 in every
+condition**, including `natural` at every round. This is not a counting artifact:
+Phase-2 `natural` carries 35 typed edges beyond `up:` at r8, essentially the same
+as Phase 1's 33. The Phase-2 agents simply satisfied typed-edge reciprocity on
+their own. **We cannot explain why**, and do not speculate; it is a real
+discrepancy with Phase 1 (whose natural chains showed 3.7).
+
+**Consequence, and it cuts toward the stricter criterion:** the shipped
+typed-only rule **missed the entire erosion** (2 → 19) that any-means detects. As
+a drift detector, typed-only is the less sensitive instrument — an argument in
+favour of the any-means criterion proposed in template issue #79.
 
 ## Result 5 — what the mechanism actually adds to the graph
 
