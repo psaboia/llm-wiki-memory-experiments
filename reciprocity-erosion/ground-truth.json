@@ -1,0 +1,45 @@
+{
+  "_comment": [
+    "Ground-truth relation set for the reciprocity-erosion corpus.",
+    "Derived ONLY from the corpus text (rounds/round1..8.md), which was fixed",
+    "before any run — so scoring existing artifacts against it is not",
+    "results-dependent. Each relation cites the round that asserts it; anyone",
+    "can audit the derivation against the round file.",
+    "Relations are unordered entity pairs: the corpus states a relationship",
+    "between the two, so a wiki that models the corpus should link them."
+  ],
+  "entities": {
+    "Tidewatch":              ["Tidewatch", "Tidewatch-Project"],
+    "Marren-Lab":             ["Marren-Lab", "The-Marren-Lab"],
+    "DriftNet":               ["DriftNet", "DriftNet-Protocol"],
+    "Kelp-Calibration":       ["Kelp-Calibration", "Kelp-Calibration-Method"],
+    "Salinity-Drift-Finding": ["Salinity-Drift-Finding", "Salinity-Drift"],
+    "Bloom-Hypothesis":       ["Bloom-Hypothesis"],
+    "Coral-Shelf":            ["Coral-Shelf"],
+    "Reef-Station":           ["Reef-Station", "Reef-Station-Observatory"],
+    "Deep-Kelp":              ["Deep-Kelp", "Deep-Kelp-Calibration"]
+  },
+  "relations": [
+    {"a": "Tidewatch",              "b": "Coral-Shelf",             "why": "deploys buoys along the Coral Shelf",        "round": 1},
+    {"a": "Tidewatch",              "b": "Marren-Lab",              "why": "operated by",                                "round": 1},
+    {"a": "Tidewatch",              "b": "DriftNet",                "why": "readings transmitted using",                 "round": 1},
+    {"a": "Tidewatch",              "b": "Salinity-Drift-Finding",  "why": "headline result of",                         "round": 1},
+    {"a": "Tidewatch",              "b": "Kelp-Calibration",        "why": "buoys calibrated using",                     "round": 1},
+    {"a": "DriftNet",               "b": "Marren-Lab",              "why": "developed by",                               "round": 2},
+    {"a": "DriftNet",               "b": "Kelp-Calibration",        "why": "requires a valid calibration from",          "round": 2},
+    {"a": "Kelp-Calibration",       "b": "Marren-Lab",              "why": "created by",                                 "round": 3},
+    {"a": "Salinity-Drift-Finding", "b": "Kelp-Calibration",        "why": "relied on it to rule out sensor drift",      "round": 3},
+    {"a": "Salinity-Drift-Finding", "b": "Coral-Shelf",             "why": "holds across the Coral Shelf",               "round": 4},
+    {"a": "Salinity-Drift-Finding", "b": "DriftNet",                "why": "uses data transmitted over",                 "round": 4},
+    {"a": "Salinity-Drift-Finding", "b": "Bloom-Hypothesis",        "why": "directly challenges",                        "round": 4},
+    {"a": "Marren-Lab",             "b": "Bloom-Hypothesis",        "why": "considers it weakened but not refuted",      "round": 4},
+    {"a": "Reef-Station",           "b": "Salinity-Drift-Finding",  "why": "independently reproduced",                   "round": 5},
+    {"a": "Reef-Station",           "b": "DriftNet",                "why": "adopted the protocol",                       "round": 5},
+    {"a": "Reef-Station",           "b": "Marren-Lab",              "why": "operated separately from",                   "round": 5},
+    {"a": "Marren-Lab",             "b": "Deep-Kelp",               "why": "proposed",                                   "round": 6},
+    {"a": "Deep-Kelp",              "b": "Kelp-Calibration",        "why": "variant of, inherits reference step",        "round": 6},
+    {"a": "Bloom-Hypothesis",       "b": "Coral-Shelf",             "why": "explains anomalies there (per critique)",    "round": 7},
+    {"a": "Bloom-Hypothesis",       "b": "Reef-Station",            "why": "critique cites its data as evidence",        "round": 7},
+    {"a": "DriftNet",               "b": "Deep-Kelp",               "why": "accepts it as a valid calibration source",   "round": 8}
+  ]
+}

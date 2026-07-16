@@ -78,6 +78,61 @@ Measurement reads the wiki's **git history** (one commit per round, message
   back-reference by any means, including frontmatter). Validate against a gold
   standard before treating absolute violation counts as exact.
 
+## Semantic scoring (does the mechanism produce *meaningful* edges?)
+
+`semantic-metrics.py <wiki>` scores a wiki's link structure against
+`ground-truth.json` — the relation set the corpus asserts. The corpus was fixed
+before any run, so the ground truth is not results-dependent; each relation cites
+the round file that asserts it and is auditable against it.
+
+Metrics, all mechanical (no LLM judge, hence no LLM-judging-LLM circularity):
+`recall` (ground-truth relations represented by any link), `typed_coverage`
+(represented as a *frontmatter typed edge* — the form the KG pipeline consumes),
+`spurious_rate` (canonical-to-canonical links whose pair the corpus never asserts
+— the hallucination/padding proxy), `prose_backref_ratio` (back-references stated
+in prose rather than only in a bare "See also" line). The scorer was validated by
+injecting a spurious link (`spurious_rate` 0.0 → 0.5) before use.
+
+## Phase 2 — pre-registered confirmatory battery
+
+**This section was written and committed before Phase 2 was run; git history is
+the audit trail.** Phase 1 (the exploratory n=3 batteries above, scored
+post-hoc against a corpus-derived ground truth) suggested that per-write
+enforcement suppresses KG-visible typed edges. Phase 2 tests that as a stated
+hypothesis on fresh chains.
+
+**Hypotheses (stated before data):**
+
+- **H1** — `typed_coverage(nudge) < typed_coverage(natural)`: per-write mechanical
+  enforcement reduces the share of true relations expressed as frontmatter typed
+  edges. *Falsified if the replicate ranges overlap.*
+- **H2** — `typed_coverage(periodic-lint) ≈ typed_coverage(natural)`: a periodic
+  lint sweep does **not** reduce them, because the ingest agent never runs a check
+  — only the sweep does. *Falsified if periodic-lint lands clearly below natural.*
+- **H3** — `spurious_rate` does not increase under enforcement: the mechanism does
+  not induce hallucinated or padded links. *Falsified if enforced conditions
+  exceed natural's range.*
+- **H4** — `recall(enforced) >= recall(natural)`: enforcement improves coverage of
+  the relations the corpus actually asserts.
+
+**Design:** conditions `natural`, `periodic-lint`, `nudge`; **n = 5** replicates
+each (Phase 1's n=3 showed wide spread in `natural`); 8 rounds per chain, fresh
+agent per round; all chains seeded from the **same commit** of the feature branch
+(removing Phase 1's seed-source confound, where only some conditions carried the
+checker). Primary metric: `typed_coverage` at final state. Secondary: `recall`,
+`spurious_rate`, `prose_backref_ratio`.
+
+**Analysis plan:** report medians and the **full replicate ranges** per condition.
+No significance test is claimed at n=5 — overlap or separation of ranges is the
+evidence, reported honestly either way. The scorer (`semantic-metrics.py`) and the
+ground truth (`ground-truth.json`) are frozen at the commit that precedes the run.
+
+**What it decides:** H2 holding supports merging the `/wiki-lint` mechanical check
+(PR #84 on the template). H1 holding means a per-write hook would trade link
+integrity for KG richness — a product decision to be made deliberately, and a
+reason to design any hook to nudge *toward typed edges*, not merely toward
+back-references.
+
 ## How to reproduce
 
 ```bash

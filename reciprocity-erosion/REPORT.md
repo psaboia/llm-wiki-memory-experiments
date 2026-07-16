@@ -120,6 +120,45 @@ zoom to 0–4.5. Regenerate with `python3 plot.py`.*
    real content. This is a consistency check on the mechanism, not a prediction of
    absolute counts.
 
+## Result 3 — the edges are semantically sound, but KG-visible typed edges collapse
+
+Does enforcement produce *meaningful* edges, or padded/hallucinated ones? Scored
+mechanically against the corpus ground truth (21 relations; `ground-truth.json`,
+`semantic-metrics.py`, `results/phase1-semantic-scores.jsonl`). Final state, mean
+of 3 replicates:
+
+| condition | recall | **typed_coverage** | spurious_rate | prose_backref |
+|---|---|---|---|---|
+| `off` | 0.87 | **0.83** | 0.13 | 0.94 |
+| `natural` | 0.95 | **0.56** | 0.22 | 1.00 |
+| `periodic-lint` | 0.94 | **0.68** | 0.21 | 0.88 |
+| `gate-on` | 0.97 | **0.38** | 0.18 | 0.97 |
+| `nudge` | 0.95 | **0.21** | 0.14 | 0.92 |
+
+**No padding, no hallucination.** `spurious_rate` does not rise with enforcement
+(nudge 0.14 is *below* natural's 0.22), and `prose_backref_ratio` is 0.88–1.00
+everywhere — back-references are substantive prose, not bare "See also" filler.
+**Recall improves** under enforcement (0.87 → 0.94–0.97): the mechanism covers
+*more* of what the corpus asserts.
+
+**But `typed_coverage` collapses under per-write enforcement**: off 0.83 → natural
+0.56 → periodic-lint 0.68 → gate-on 0.38 → nudge 0.21. Replicates do not overlap
+between the extremes (nudge [0.24, 0.19, 0.19] vs off [0.91, 0.86, 0.71]). Under a
+per-write check, only ~1 in 5 true relations stays visible to the knowledge-graph
+pipeline: the relations are still present and correct, but expressed in body prose
+rather than as frontmatter typed edges — excellent for human readers, invisible to
+the KG.
+
+**`periodic-lint` (what PR #84 ships) does not show the effect**: 0.68
+([0.62, 0.71, 0.71]) sits *above* `natural`'s 0.56. Mechanically consistent — its
+ingest agent never runs a check; only the sweep repairs. This is the evidence that
+#84 is safe, and that the cost lands on a per-write hook instead.
+
+*Evidence strength: Phase 1 is exploratory — n=3, and the ground truth was
+formalised after the runs (though derived solely from the pre-existing corpus, and
+auditable against it). Phase 2 (pre-registered, n=5; see PROTOCOL) tests H1/H2 on
+fresh chains.*
+
 ## Threats to validity
 
 - **Synthetic corpus** (fictional, fixed) — chosen for a controlled, identical
