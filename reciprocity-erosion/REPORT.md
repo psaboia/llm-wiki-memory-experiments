@@ -66,6 +66,14 @@ sweeps and drops at each sweep (any-means reset from 4.3 at round 4 to 0.3 right
 after `lint4`, then climbs again and drops at `lint8`). It bounds erosion to a low
 ceiling rather than eliminating it.
 
+![The periodic-lint sawtooth: violations climb between sweeps and drop at each
+lint sweep (marked at 4.5 and 8.5), staying well below the un-swept natural
+condition which climbs monotonically.](figures/sawtooth-periodic-lint.png)
+
+*Figure: the sawtooth, plotted in event sequence so the sweeps are visible (the
+five-condition chart above plots round-end state only and therefore cannot show
+them). `natural` overlaid for contrast. Regenerate with `python3 plot.py`.*
+
 Both conditions grow the wiki to about the same size (~11–12 content pages at r8),
 so the difference is not "the stricter conditions wrote less" — it is that they
 kept links bidirectional while the weaker ones let them go one-way.
