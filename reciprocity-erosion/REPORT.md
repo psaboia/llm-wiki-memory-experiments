@@ -154,10 +154,51 @@ the KG.
 ingest agent never runs a check; only the sweep repairs. This is the evidence that
 #84 is safe, and that the cost lands on a per-write hook instead.
 
-*Evidence strength: Phase 1 is exploratory — n=3, and the ground truth was
-formalised after the runs (though derived solely from the pre-existing corpus, and
-auditable against it). Phase 2 (pre-registered, n=5; see PROTOCOL) tests H1/H2 on
-fresh chains.*
+*Evidence strength: Phase 1 is exploratory — n=3, ground truth formalised after
+the runs (though derived solely from the pre-existing corpus), and a seed-source
+confound. **The typed_coverage claim above did not replicate**: see Result 4, where
+the pre-registered n=5 test falsifies H1. Read this table as the exploratory signal
+that motivated Phase 2, not as a finding.*
+
+## Result 4 — Phase 2 (pre-registered, n=5): H1 falsified, H2/H3/H4 sustained
+
+Phase 1's typed-edge suppression signal was tested as a stated hypothesis on fresh
+chains (n=5, all seeded from one commit, scorer and ground truth frozen at the
+pre-registration commit `78679bf`; see PROTOCOL § Phase 2).
+Data: `results/phase2-semantic-scores.jsonl`.
+
+| condition | n | typed_coverage median | full replicate range | recall median | spurious median |
+|---|---|---|---|---|---|
+| `natural` | 5 | 0.33 | [0.19 – 0.86] | 1.00 | 0.34 |
+| `periodic-lint` | 5 | 0.29 | [0.19 – 0.62] | 1.00 | 0.34 |
+| `nudge` | 5 | 0.19 | [0.10 – 0.48] | 1.00 | 0.28 |
+
+- **H1 — FALSIFIED.** `nudge` [0.10–0.48] and `natural` [0.19–0.86] overlap
+  heavily; the pre-registered falsification criterion (non-overlapping ranges) is
+  not met. **Phase 1's headline (typed_coverage 0.56 → 0.21) did not replicate.**
+  Its cause is visible in the Phase-2 spread: `natural` runs
+  [0.19, 0.29, 0.33, 0.33, **0.86**] — one outlier drags the *mean* to 0.44 while
+  the *median* is 0.33. Phase 1's n=3 mean of 0.56, plus its seed-source confound
+  (natural from `main`, nudge from the branch), manufactured a gap that a
+  confirmatory design does not reproduce.
+  *Precisely:* falsified ≠ "no effect exists". The medians still order
+  0.33 > 0.29 > 0.19; if an effect exists it is smaller than the noise at n=5.
+  There is simply **no basis to claim per-write enforcement degrades the KG**.
+- **H2 — SUSTAINED.** `periodic-lint` [0.19–0.62] overlaps `natural` [0.19–0.86];
+  medians 0.29 vs 0.33. A periodic sweep does not reduce typed-edge coverage.
+- **H3 — SUSTAINED.** Spurious rate does not rise with enforcement (`nudge` is the
+  *lowest*: 0.28 vs natural 0.34). No induced hallucination or padding.
+- **H4 — SUSTAINED.** Recall is **1.00** in every condition: every wiki represents
+  all 21 corpus relations, enforced or not.
+
+Two honest notes Phase 2 surfaced: `spurious_rate` is uniformly higher than in
+Phase 1 (0.28–0.34 vs 0.13–0.22) — equal across conditions, so it is a property of
+how these wikis get built, not of enforcement; and `recall` is higher (1.00 vs
+0.94–0.97).
+
+**Bearing:** PR #84 (the `/wiki-lint` mechanical check) is supported — H2, H3, H4
+all hold. The semantic objection raised against a per-write hook after Phase 1 is
+**withdrawn**: it did not survive its own confirmatory test.
 
 ## Threats to validity
 
@@ -187,7 +228,8 @@ Supports three decisions on the live template
   line of continuous enforcement.
 - **A per-write PostToolUse hook** running the same check. The `nudge` condition
   (0.0, matching/beating the instruction gate's 0.7) is the behavioral evidence
-  that continuous mechanical enforcement holds reciprocity at zero. A hook PR would
+  that continuous mechanical enforcement holds reciprocity at zero, and Phase 2
+  found **no** semantic cost to it (H1 falsified, H3/H4 sustained). A hook PR would
   still need a harness test for the *wiring* (does the hook fire); this battery
   covers the *efficacy*, not the plumbing.
 - **Clear the existing debt** (the 29 typed / 59 any-means, or 64 by the shipped
