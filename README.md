@@ -58,7 +58,20 @@ Two batteries ran so far (see `reciprocity-erosion/results/`):
 See `reciprocity-erosion/PROTOCOL.md` for the full design, provenance, and honest
 limitations (synthetic corpus, single model family, N=3, agent-generated data).
 
+### `synthesis-gap/` (pre-registered; not yet run)
+
+Does the ingestion *workflow*, not the LLM, cause landscape wikis to accumulate
+summaries but almost no tension edges (`extends`/`supports`/`criticizes`) or
+synthesis pages? Pipeline archaeology on a real wiki suggested the sources were
+pre-extracted into templates and no LLM ever read the papers for relationships;
+this experiment tests the fix — read the full source and cross-reference — across
+four ingestion conditions, scored by valid tension-edge count (LLM-judge for
+groundedness, calibrated on a small reference subset; circularity declared).
+`synthesis-gap/PROTOCOL.md` is the pre-registration (committed before any data).
+No third-party PDFs live here — see `synthesis-gap/corpus/README.md`.
+
 ## Status
 
-Private working repo for in-progress research. Intended to be archived to Zenodo
-for a DOI once the accompanying experiment section is finalized.
+Working repo for in-progress research. Corpora (paper PDFs) are never committed —
+only their identity (sha256 + source). Intended to be archived to Zenodo for a DOI
+once the accompanying experiment sections are finalized.

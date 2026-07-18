@@ -1,0 +1,5 @@
+# Third-party paper PDFs are never committed (copyright/redistribution, binary
+# bloat, and this repo is public). Corpora live outside the repo; the repo keeps
+# only identity (corpus/manifest.json: filename + sha256 + source).
+*.pdf
+**/pdfs/
